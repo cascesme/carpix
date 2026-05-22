@@ -4,14 +4,14 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Phase 1 context gathered
-last_updated: "2026-05-22T17:11:46.243Z"
-last_activity: 2026-05-22 -- Phase 01 execution started
+last_updated: "2026-05-22T17:26:08.392Z"
+last_activity: 2026-05-22
 progress:
   total_phases: 7
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 0
-  percent: 0
+  completed_plans: 2
+  percent: 14
 ---
 
 # Project State
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 ## Current Position
 
 Phase: 01 (foundation) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 01
-Last activity: 2026-05-22 -- Phase 01 execution started
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-05-22
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P02 | 10min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,9 @@ Recent decisions affecting current work:
 - 800px via CDN pattern, no local resize: Wikimedia handles thumbnail server-side, ~200KB result
 - Stub Wikimedia HTTP in integration tests: prevents flaky tests; real Postgres via testcontainers
 - Sibling Docker service (separate repo): clean separation from parent; independent deploy and scale
+- [Phase ?]: AsyncGenerator imported from collections.abc (not typing) per ruff UP035 for Python 3.12 target
+- [Phase ?]: asyncpg timeout=3 confirmed valid kwarg via inspect.signature kept for health probe
+- [Phase ?]: DSN scheme stripping before asyncpg connect: replace postgresql+asyncpg:// with postgresql://
 
 ### Pending Todos
 
@@ -84,6 +88,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-22T13:41:22.603Z
+Last session: 2026-05-22T17:26:08.387Z
 Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Resume file: None

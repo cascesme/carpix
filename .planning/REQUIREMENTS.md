@@ -9,13 +9,13 @@
 
 - [ ] **API-01**: Client can request image via `GET /v1/images/{brand}/{model}/{year}` — cache hit or miss returns `FileResponse` with `Content-Type: image/jpeg`
 - [ ] **API-02**: Client receives HTTP 404 with `{"detail": "No image found for this vehicle"}` when Wikimedia returns no results or download fails
-- [ ] **API-03**: `GET /health` returns HTTP 200 for process liveness; succeeds even when DB is unreachable
+- [x] **API-03**: `GET /health` returns HTTP 200 for process liveness; succeeds even when DB is unreachable
 - [ ] **API-04**: Image response includes `X-Cache: HIT` or `X-Cache: MISS` header
-- [ ] **API-05**: `GET /health` includes `SELECT 1` DB probe and reports DB connectivity status distinct from process liveness
+- [x] **API-05**: `GET /health` includes `SELECT 1` DB probe and reports DB connectivity status distinct from process liveness
 
 ### Normalization
 
-- [ ] **NORM-01**: Brand and model inputs normalized to canonical keys (lowercase, strip all non-alphanumeric characters) before cache lookup and filesystem path construction; normalization matches parent project's `domain/vehicle_identity.py`
+- [x] **NORM-01**: Brand and model inputs normalized to canonical keys (lowercase, strip all non-alphanumeric characters) before cache lookup and filesystem path construction; normalization matches parent project's `domain/vehicle_identity.py`
 
 ### Cache
 
@@ -82,9 +82,9 @@ Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NORM-01 | Phase 1 | Pending |
-| API-03 | Phase 1 | Pending |
-| API-05 | Phase 1 | Pending |
+| NORM-01 | Phase 1 | Complete |
+| API-03 | Phase 1 | Complete |
+| API-05 | Phase 1 | Complete |
 | STORE-01 | Phase 2 | Pending |
 | STORE-02 | Phase 2 | Pending |
 | DB-01 | Phase 3 | Pending |

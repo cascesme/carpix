@@ -13,7 +13,7 @@ Build a FastAPI microservice from scratch that answers any vehicle image query �
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Project scaffolding, normalization logic, and health endpoint skeleton
+- [x] **Phase 1: Foundation** - Project scaffolding, normalization logic, and health endpoint skeleton (completed 2026-05-22)
 - [ ] **Phase 2: Storage Layer** - StorageService with path contract and traversal guard
 - [ ] **Phase 3: Database Layer** - Alembic migration, CacheRepository, and connection pool lifecycle
 - [ ] **Phase 4: Wikimedia Client** - 3-step image fetch with JPEG filter and fallback query chain
@@ -43,7 +43,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Implement canonical_key, config, /health router, app factory; pass ruff + mypy --strict
+- [x] 01-02-PLAN.md — Implement canonical_key, config, /health router, app factory; pass ruff + mypy --strict
 
 ### Phase 2: Storage Layer
 
@@ -136,7 +136,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/2 | In Progress|  |
+| 1. Foundation | 2/2 | Complete   | 2026-05-22 |
 | 2. Storage Layer | 0/TBD | Not started | - |
 | 3. Database Layer | 0/TBD | Not started | - |
 | 4. Wikimedia Client | 0/TBD | Not started | - |
