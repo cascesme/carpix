@@ -82,35 +82,35 @@ Populated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NORM-01 | — | Pending |
-| API-01 | — | Pending |
-| API-02 | — | Pending |
-| API-03 | — | Pending |
-| API-04 | — | Pending |
-| API-05 | — | Pending |
-| CACHE-01 | — | Pending |
-| CACHE-02 | — | Pending |
-| CACHE-03 | — | Pending |
-| CACHE-04 | — | Pending |
-| WIKI-01 | — | Pending |
-| WIKI-02 | — | Pending |
-| WIKI-03 | — | Pending |
-| STORE-01 | — | Pending |
-| STORE-02 | — | Pending |
-| DB-01 | — | Pending |
-| DB-02 | — | Pending |
-| DB-03 | — | Pending |
-| OPS-01 | — | Pending |
-| OPS-02 | — | Pending |
-| OPS-03 | — | Pending |
-| QUAL-01 | — | Pending |
-| QUAL-02 | — | Pending |
+| NORM-01 | Phase 1 | Pending |
+| API-03 | Phase 1 | Pending |
+| API-05 | Phase 1 | Pending |
+| STORE-01 | Phase 2 | Pending |
+| STORE-02 | Phase 2 | Pending |
+| DB-01 | Phase 3 | Pending |
+| DB-02 | Phase 3 | Pending |
+| DB-03 | Phase 3 | Pending |
+| WIKI-01 | Phase 4 | Pending |
+| WIKI-02 | Phase 4 | Pending |
+| WIKI-03 | Phase 4 | Pending |
+| CACHE-01 | Phase 5 | Pending |
+| CACHE-02 | Phase 5 | Pending |
+| CACHE-03 | Phase 5 | Pending |
+| CACHE-04 | Phase 5 | Pending |
+| API-01 | Phase 6 | Pending |
+| API-02 | Phase 6 | Pending |
+| API-04 | Phase 6 | Pending |
+| QUAL-01 | Phase 6 | Pending |
+| QUAL-02 | Phase 6 | Pending |
+| OPS-01 | Phase 7 | Pending |
+| OPS-02 | Phase 7 | Pending |
+| OPS-03 | Phase 7 | Pending |
 
 **Coverage:**
 - v1 requirements: 23 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 23 ⚠️
+- Mapped to phases: 23
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after initial definition*
+*Last updated: 2026-05-22 after roadmap creation*
