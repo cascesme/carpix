@@ -31,7 +31,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. `GET /health` response body includes a DB connectivity probe field (`SELECT 1`) with a value distinct from process liveness
   3. Brand and model strings are normalized to lowercase with all non-alphanumeric characters stripped, matching the behavior of the parent project's `domain/vehicle_identity.py`
   4. The app starts cleanly with `uvicorn main:app` and all routes are discoverable via `/docs`
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md — Scaffold project (uv, src-layout pyproject.toml, package dirs, Wave 0 failing test stubs)
+- [ ] 01-02-PLAN.md — Implement canonical_key, config, /health router, app factory; pass ruff + mypy --strict
 
 ### Phase 2: Storage Layer
 **Goal**: A StorageService can write image bytes to the correct path and serve them safely via FileResponse
@@ -106,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/2 | Not started | - |
 | 2. Storage Layer | 0/TBD | Not started | - |
 | 3. Database Layer | 0/TBD | Not started | - |
 | 4. Wikimedia Client | 0/TBD | Not started | - |
