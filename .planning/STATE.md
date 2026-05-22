@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: phase_complete
+stopped_at: Phase 1 complete — all plans executed, tests GREEN, ruff+mypy clean
+last_updated: "2026-05-22"
+last_activity: 2026-05-22
+progress:
+  total_phases: 7
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
+  percent: 14
+---
+
 # Project State
 
 ## Project Reference
@@ -5,20 +21,21 @@
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Any vehicle query is answered with an image — cache hit or Wikimedia fetch — never a 500, always a FileResponse or a clean 404.
-**Current focus:** Phase 1: Foundation
+**Current focus:** Phase 01 — foundation
 
 ## Current Position
 
-Phase: 1 of 7 (Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-05-22 — Roadmap created; all 23 v1 requirements mapped across 7 phases
+Phase: 01 (foundation) — COMPLETE
+Plan: 2 of 2
+Status: All plans executed, verified GREEN
+Last activity: 2026-05-22
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: —
 - Total execution time: 0 hours
@@ -30,10 +47,12 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: —
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P02 | 10min | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -47,6 +66,9 @@ Recent decisions affecting current work:
 - 800px via CDN pattern, no local resize: Wikimedia handles thumbnail server-side, ~200KB result
 - Stub Wikimedia HTTP in integration tests: prevents flaky tests; real Postgres via testcontainers
 - Sibling Docker service (separate repo): clean separation from parent; independent deploy and scale
+- [Phase ?]: AsyncGenerator imported from collections.abc (not typing) per ruff UP035 for Python 3.12 target
+- [Phase ?]: asyncpg timeout=3 confirmed valid kwarg via inspect.signature kept for health probe
+- [Phase ?]: DSN scheme stripping before asyncpg connect: replace postgresql+asyncpg:// with postgresql://
 
 ### Pending Todos
 
@@ -66,6 +88,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-05-22
-Stopped at: Roadmap created; ready to begin planning Phase 1
+Last session: 2026-05-22T17:26:08.387Z
+Stopped at: Phase 1 context gathered
 Resume file: None
