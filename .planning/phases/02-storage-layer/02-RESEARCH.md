@@ -187,7 +187,7 @@ from pathlib import Path
 def _validated_path(self, brand_key: str, model_key: str, year: int) -> Path:
     candidate = self._base / brand_key / model_key / str(year) / "image.jpg"
     resolved = candidate.resolve()
-    if not resolved.is_relative_to(self._base.resolve()):
+    if not resolved.is_relative_to(self._base):  # self._base already resolved in __init__
         raise ValueError(f"Path traversal attempt: {candidate!r}")
     return resolved
 ```
@@ -448,17 +448,17 @@ os.environ.setdefault("IMAGES_DIR", "/tmp/carpix_test_images")  # NEW in Phase 2
 
 **Both claims are low-risk based on verified source inspection.**
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should `StorageService` be instantiated once at app startup (singleton) or per-request?**
    - What we know: Phase 5 (ImageService) will depend on StorageService. Phase 3 wires the DB pool as a lifespan-scoped singleton.
    - What's unclear: Whether Phase 5 expects StorageService from DI (FastAPI `Depends`) or direct construction.
-   - Recommendation: For Phase 2, construct `StorageService(settings.images_dir)` as a module-level singleton in `services/storage.py`. Phase 5 can refactor to `Depends` if needed. This keeps Phase 2 simple and self-contained.
+   - RESOLVED: For Phase 2, construct `StorageService(settings.images_dir)` as a module-level singleton in `services/storage.py`. Phase 5 can refactor to `Depends` if needed. This keeps Phase 2 simple and self-contained.
 
 2. **Should `file_response()` check that the file exists before returning FileResponse?**
    - What we know: `FileResponse` raises `RuntimeError` at dispatch time (not at construction) if the file is missing.
    - What's unclear: Phase 2 success criteria say "a valid path that resolves inside `/images` is served without error" — this implies the file exists when `file_response()` is called. Phase 4/5 will ensure DB-hit implies file exists.
-   - Recommendation: Phase 2 does NOT add a pre-existence check. That belongs in Phase 5's self-healing logic (CACHE-04). Document the contract: `file_response()` callers are responsible for ensuring the file exists.
+   - RESOLVED: Phase 2 does NOT add a pre-existence check. That belongs in Phase 5's self-healing logic (CACHE-04). Document the contract: `file_response()` callers are responsible for ensuring the file exists.
 
 ## Environment Availability
 

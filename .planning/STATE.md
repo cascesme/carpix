@@ -9,7 +9,7 @@ last_activity: 2026-05-23 -- Phase 02 execution started
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 2
+  total_plans: 4
   completed_plans: 2
   percent: 14
 ---
@@ -21,7 +21,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Any vehicle query is answered with an image — cache hit or Wikimedia fetch — never a 500, always a FileResponse or a clean 404.
-**Current focus:** Phase 01 — foundation
+**Current focus:** Phase 02 — storage-layer
 
 ## Current Position
 
@@ -30,7 +30,7 @@ Plan: 1 of 2
 Status: Executing Phase 02
 Last activity: 2026-05-23 -- Phase 02 execution started
 
-Progress: [██████████] 100%
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
