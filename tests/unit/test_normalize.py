@@ -1,4 +1,5 @@
 """Unit tests for canonical_key normalization — NORM-01."""
+
 import pytest
 
 from carpix_images.domain.normalize import canonical_key
