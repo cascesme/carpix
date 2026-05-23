@@ -60,7 +60,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — TDD RED baseline: services package, StorageService stub, 5 failing unit tests, IMAGES_DIR conftest guard
+- [x] 02-01-PLAN.md — TDD RED baseline: services package, StorageService stub, 5 failing unit tests, IMAGES_DIR conftest guard
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -145,7 +145,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-05-22 |
-| 2. Storage Layer | 0/2 | Not started | - |
+| 2. Storage Layer | 1/2 | In Progress|  |
 | 3. Database Layer | 0/TBD | Not started | - |
 | 4. Wikimedia Client | 0/TBD | Not started | - |
 | 5. Service Orchestration | 0/TBD | Not started | - |
