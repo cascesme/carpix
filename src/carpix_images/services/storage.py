@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import anyio
 from fastapi.responses import FileResponse
 
 
@@ -17,7 +18,11 @@ class StorageService:
     async def save(
         self, brand_key: str, model_key: str, year: int, data: bytes
     ) -> Path:
-        raise NotImplementedError
+        target_dir = anyio.Path(self._base) / brand_key / model_key / str(year)
+        await target_dir.mkdir(parents=True, exist_ok=True)
+        target_file = target_dir / "image.jpg"
+        await target_file.write_bytes(data)
+        return Path(target_file)
 
     def file_response(
         self, brand_key: str, model_key: str, year: int
