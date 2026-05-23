@@ -78,7 +78,15 @@ Plans:
   3. `CacheRepository.insert()` is idempotent: a second insert for the same composite key does not raise an error (`ON CONFLICT DO NOTHING`)
   4. The asyncpg/SQLAlchemy connection pool is created on app startup and closed cleanly on shutdown; no leaked connections after shutdown
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — TDD RED baseline: add sqlalchemy + alembic deps, scaffold infrastructure package, write 5 failing integration tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — Implement Alembic migration + CacheRepository + lifespan pool wiring + testcontainers fixture; all 5 tests GREEN + ruff + mypy clean
 
 ### Phase 4: Wikimedia Client
 
@@ -146,7 +154,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-05-22 |
 | 2. Storage Layer | 2/2 | Complete   | 2026-05-23 |
-| 3. Database Layer | 0/TBD | Not started | - |
+| 3. Database Layer | 0/2 | Not started | - |
 | 4. Wikimedia Client | 0/TBD | Not started | - |
 | 5. Service Orchestration | 0/TBD | Not started | - |
 | 6. Router + E2E Integration | 0/TBD | Not started | - |
