@@ -12,7 +12,9 @@ Any vehicle query is answered with an image — cache hit or Wikimedia fetch —
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Cached images persist across container restarts via Docker volume mount at `/images` — Validated in Phase 02 (storage-layer): StorageService writes to `{base}/{brand}/{model}/{year}/image.jpg`
+- [x] Input brand/model are normalized to canonical keys (lowercase, strip non-alphanumeric) before cache lookup — Validated in Phase 01 (foundation): `canonical_key()` in domain/normalize.py
+- [x] `GET /health` returns service liveness status — Validated in Phase 01 (foundation): `/health` endpoint with DB probe
 
 ### Active
 
