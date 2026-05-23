@@ -4,3 +4,4 @@ import os
 os.environ.setdefault(
     "DATABASE_URL", "postgresql+asyncpg://user:pass@localhost:5432/testdb"
 )
+os.environ.setdefault("IMAGES_DIR", "/tmp/carpix_test_images")

@@ -14,7 +14,7 @@ Build a FastAPI microservice from scratch that answers any vehicle image query �
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding, normalization logic, and health endpoint skeleton (completed 2026-05-22)
-- [ ] **Phase 2: Storage Layer** - StorageService with path contract and traversal guard
+- [x] **Phase 2: Storage Layer** - StorageService with path contract and traversal guard (completed 2026-05-23)
 - [ ] **Phase 3: Database Layer** - Alembic migration, CacheRepository, and connection pool lifecycle
 - [ ] **Phase 4: Wikimedia Client** - 3-step image fetch with JPEG filter and fallback query chain
 - [ ] **Phase 5: Service Orchestration** - ImageService with cache-aside logic, per-key locking, and self-healing
@@ -56,7 +56,15 @@ Plans:
   2. A FileResponse path that resolves outside `/images` (path traversal attempt) is rejected before the response is returned
   3. A valid path that resolves inside `/images` is served without error
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [x] 02-01-PLAN.md — TDD RED baseline: services package, StorageService stub, 5 failing unit tests, IMAGES_DIR conftest guard
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [x] 02-02-PLAN.md — Implement StorageService.save() + file_response() + traversal guard + Settings.images_dir; all 5 tests GREEN + ruff + mypy clean
 
 ### Phase 3: Database Layer
 
@@ -137,7 +145,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-05-22 |
-| 2. Storage Layer | 0/TBD | Not started | - |
+| 2. Storage Layer | 2/2 | Complete   | 2026-05-23 |
 | 3. Database Layer | 0/TBD | Not started | - |
 | 4. Wikimedia Client | 0/TBD | Not started | - |
 | 5. Service Orchestration | 0/TBD | Not started | - |
