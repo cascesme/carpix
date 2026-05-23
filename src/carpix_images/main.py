@@ -2,14 +2,20 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
+from carpix_images.config import settings
 from carpix_images.routers.health import router as health_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
-    # Phase 1: no-op. Phase 3 will wire asyncpg pool here.
-    yield
+    engine: AsyncEngine = create_async_engine(settings.database_url)
+    app.state.engine = engine
+    try:
+        yield
+    finally:
+        await engine.dispose()
 
 
 def create_app() -> FastAPI:

@@ -13,10 +13,10 @@ import os
 
 import asyncpg
 import pytest
-from alembic import command
 from alembic.config import Config
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
+from alembic import command
 from carpix_images.infrastructure.cache_repository import CacheEntry, CacheRepository
 
 pytestmark = pytest.mark.usefixtures("postgres_container")
