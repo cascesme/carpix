@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding, normalization logic, and health endpoint skeleton (completed 2026-05-22)
 - [x] **Phase 2: Storage Layer** - StorageService with path contract and traversal guard (completed 2026-05-23)
-- [ ] **Phase 3: Database Layer** - Alembic migration, CacheRepository, and connection pool lifecycle
+- [x] **Phase 3: Database Layer** - Alembic migration, CacheRepository, and connection pool lifecycle (completed 2026-05-23)
 - [ ] **Phase 4: Wikimedia Client** - 3-step image fetch with JPEG filter and fallback query chain
 - [ ] **Phase 5: Service Orchestration** - ImageService with cache-aside logic, per-key locking, and self-healing
 - [ ] **Phase 6: Router + E2E Integration** - API endpoints, X-Cache header, and full test suite
@@ -86,7 +86,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — Implement Alembic migration + CacheRepository + lifespan pool wiring + testcontainers fixture; all 5 tests GREEN + ruff + mypy clean
+- [x] 03-02-PLAN.md — Implement Alembic migration + CacheRepository + lifespan pool wiring + testcontainers fixture; all 5 tests GREEN + ruff + mypy clean
 
 ### Phase 4: Wikimedia Client
 
@@ -154,7 +154,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete   | 2026-05-22 |
 | 2. Storage Layer | 2/2 | Complete   | 2026-05-23 |
-| 3. Database Layer | 1/2 | In Progress|  |
+| 3. Database Layer | 2/2 | Complete   | 2026-05-23 |
 | 4. Wikimedia Client | 0/TBD | Not started | - |
 | 5. Service Orchestration | 0/TBD | Not started | - |
 | 6. Router + E2E Integration | 0/TBD | Not started | - |
