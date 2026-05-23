@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -9,6 +12,7 @@ class Settings(BaseSettings):
     )
 
     database_url: str
+    images_dir: Path = Field(default=Path("/images"))
 
 
 settings = Settings()

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import anyio
 from fastapi.responses import FileResponse
 
 
@@ -12,14 +13,23 @@ class StorageService:
     def _validated_path(
         self, brand_key: str, model_key: str, year: int
     ) -> Path:
-        raise NotImplementedError
+        candidate = self._base / brand_key / model_key / str(year) / "image.jpg"
+        resolved = candidate.resolve()
+        if not resolved.is_relative_to(self._base):
+            raise ValueError(f"Path traversal attempt: {candidate!r}")
+        return resolved
 
     async def save(
         self, brand_key: str, model_key: str, year: int, data: bytes
     ) -> Path:
-        raise NotImplementedError
+        target_dir = anyio.Path(self._base) / brand_key / model_key / str(year)
+        await target_dir.mkdir(parents=True, exist_ok=True)
+        target_file = target_dir / "image.jpg"
+        await target_file.write_bytes(data)
+        return Path(target_file)
 
     def file_response(
         self, brand_key: str, model_key: str, year: int
     ) -> FileResponse:
-        raise NotImplementedError
+        path = self._validated_path(brand_key, model_key, year)
+        return FileResponse(path=path, media_type="image/jpeg")
