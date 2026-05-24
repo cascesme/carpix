@@ -66,7 +66,11 @@ class CacheRepository:
                     "(brand_key, model_key, year, local_path, source_url, file_title) "
                     "VALUES (:brand_key, :model_key, :year, "
                     ":local_path, :source_url, :file_title) "
-                    "ON CONFLICT DO NOTHING"
+                    "ON CONFLICT (brand_key, model_key, year) DO UPDATE SET "
+                    "local_path = EXCLUDED.local_path, "
+                    "source_url = EXCLUDED.source_url, "
+                    "file_title = EXCLUDED.file_title, "
+                    "cached_at = now()"
                 ),
                 {
                     "brand_key": brand_key,
