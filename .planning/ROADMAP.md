@@ -126,7 +126,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 05-01-PLAN.md — TDD RED baseline: ImageService stub, 5 failing unit tests covering all 4 cache behaviors
+- [x] 05-01-PLAN.md — TDD RED baseline: ImageService stub, 5 failing unit tests covering all 4 cache behaviors
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -172,6 +172,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 2. Storage Layer | 2/2 | Complete   | 2026-05-23 |
 | 3. Database Layer | 2/2 | Complete   | 2026-05-23 |
 | 4. Wikimedia Client | 2/2 | Complete   | 2026-05-24 |
-| 5. Service Orchestration | 0/2 | Not started | - |
+| 5. Service Orchestration | 1/2 | In Progress|  |
 | 6. Router + E2E Integration | 0/TBD | Not started | - |
 | 7. Containerization | 0/TBD | Not started | - |
