@@ -75,18 +75,18 @@ def run_migrations() -> None:
     command.upgrade(_alembic_cfg(), "head")
 
 
-@pytest.fixture(scope="module")
-def app() -> object:
-    return create_app()
-
-
 @pytest.fixture()
-async def client(app: object) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(
-        transport=ASGITransport(app=app),  # type: ignore[arg-type]
-        base_url="http://test",
-    ) as c:
-        yield c
+async def client() -> AsyncGenerator[AsyncClient, None]:
+    from carpix_images.config import settings as app_settings
+
+    app_settings.database_url = os.environ["DATABASE_URL"]  # type: ignore[misc]
+    application = create_app()
+    async with application.router.lifespan_context(application):
+        async with AsyncClient(
+            transport=ASGITransport(app=application),  # type: ignore[arg-type]
+            base_url="http://test",
+        ) as c:
+            yield c
 
 
 # ---------------------------------------------------------------------------
