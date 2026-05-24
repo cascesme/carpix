@@ -12,6 +12,7 @@ from carpix_images.infrastructure.cache_repository import CacheRepository
 from carpix_images.services.storage import StorageService
 from carpix_images.services.wikimedia import WikimediaClient
 
+_USER_AGENT = "carpix-images/0.1 (https://github.com/user/carpix)"
 
 class ImageService:
     def __init__(
@@ -52,7 +53,7 @@ class ImageService:
                 )
 
             try:
-                response = await self._http_client.get(url, timeout=httpx.Timeout(30.0))
+                response = await self._http_client.get(url, timeout=httpx.Timeout(30.0), headers={"User-Agent": _USER_AGENT})
                 response.raise_for_status()
             except (httpx.HTTPStatusError, httpx.RequestError):
                 raise HTTPException(

@@ -136,6 +136,7 @@ name = "carpix-images"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "alembic" },
     { name = "asyncpg" },
     { name = "fastapi" },
     { name = "httpx" },
@@ -146,7 +147,6 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
-    { name = "alembic" },
     { name = "mypy" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -157,7 +157,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "alembic", marker = "extra == 'dev'", specifier = ">=1.18" },
+    { name = "alembic", specifier = ">=1.18" },
     { name = "asyncpg", specifier = ">=0.31.0" },
     { name = "fastapi", specifier = ">=0.136.1" },
     { name = "httpx", specifier = ">=0.28.1" },
