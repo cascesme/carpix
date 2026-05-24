@@ -170,7 +170,7 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 07-01-PLAN.md — Multi-stage Dockerfile with appuser + /images owned by appuser + .dockerignore
+- [x] 07-01-PLAN.md — Multi-stage Dockerfile with appuser + /images owned by appuser + .dockerignore
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -189,4 +189,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Wikimedia Client | 2/2 | Complete   | 2026-05-24 |
 | 5. Service Orchestration | 2/2 | Complete   | 2026-05-24 |
 | 6. Router + E2E Integration | 2/2 | Complete   | 2026-05-24 |
-| 7. Containerization | 0/2 | Not started | - |
+| 7. Containerization | 1/2 | In Progress|  |
