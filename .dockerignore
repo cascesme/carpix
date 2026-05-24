@@ -1,0 +1,41 @@
+# Python virtual environment
+.venv/
+
+# Git metadata
+.git/
+.gitignore
+
+# Planning artifacts
+.planning/
+
+# Tests (not needed in production image)
+tests/
+
+# Environment files (secrets injected at runtime)
+.env
+.env.*
+
+# Python bytecode
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+
+# Cache directories
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# CI
+.github/
+
+# Docker files (not needed inside image)
+Dockerfile
+docker-compose*.yml
