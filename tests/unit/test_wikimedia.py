@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator
+
 import httpx
 import pytest
 import respx
@@ -12,8 +14,9 @@ _API_URL = "https://commons.wikimedia.org/w/api.php"
 
 
 @pytest.fixture()
-def wiki_client() -> WikimediaClient:
-    return WikimediaClient(httpx.AsyncClient())
+async def wiki_client() -> AsyncGenerator[WikimediaClient, None]:
+    async with httpx.AsyncClient() as client:
+        yield WikimediaClient(client)
 
 
 async def test_find_jpeg_url_returns_thumburl_exactly(
