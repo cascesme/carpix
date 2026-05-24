@@ -1,17 +1,19 @@
-"""Integration tests for GET /v1/images/{brand}/{model}/{year} — RED baseline for Phase 6."""
+"""Integration tests for GET /v1/images/{brand}/{model}/{year}."""
 
 from __future__ import annotations
 
+import asyncio
 import os
+import shutil
 from collections.abc import AsyncGenerator
 
+import asyncpg
 import pytest
 import respx
-import httpx
-from alembic import command
 from alembic.config import Config
-from httpx import AsyncClient, ASGITransport
+from httpx import ASGITransport, AsyncClient
 
+from alembic import command
 from carpix_images.main import create_app
 
 pytestmark = pytest.mark.usefixtures("postgres_container")
@@ -72,21 +74,41 @@ def _stub_wikimedia_no_result(respx_mock: respx.MockRouter) -> None:
 
 @pytest.fixture(scope="module", autouse=True)
 def run_migrations() -> None:
+    """Run migrations and reset state for a clean test environment."""
     command.upgrade(_alembic_cfg(), "head")
 
+    # Truncate vehicle_images table to ensure a clean state for router tests.
+    # The cache_repository integration tests may have pre-populated rows.
+    async def _truncate() -> None:
+        url = os.environ["DATABASE_URL"].replace(
+            "postgresql+asyncpg://", "postgresql://"
+        )
+        conn = await asyncpg.connect(url)
+        try:
+            await conn.execute("TRUNCATE TABLE vehicle_images")
+        finally:
+            await conn.close()
 
-@pytest.fixture(scope="module")
-def app() -> object:
-    return create_app()
+    asyncio.run(_truncate())
+
+    # Clean cached images to avoid stale HIT responses from prior test runs.
+    images_dir = os.environ.get("IMAGES_DIR", "/tmp/carpix_test_images")
+    if os.path.isdir(images_dir):
+        shutil.rmtree(images_dir)
 
 
 @pytest.fixture()
-async def client(app: object) -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(
-        transport=ASGITransport(app=app),  # type: ignore[arg-type]
-        base_url="http://test",
-    ) as c:
-        yield c
+async def client() -> AsyncGenerator[AsyncClient, None]:
+    from carpix_images.config import settings as app_settings
+
+    app_settings.database_url = os.environ["DATABASE_URL"]  # type: ignore[misc]
+    application = create_app()
+    async with application.router.lifespan_context(application):
+        async with AsyncClient(
+            transport=ASGITransport(app=application),  # type: ignore[arg-type]
+            base_url="http://test",
+        ) as c:
+            yield c
 
 
 # ---------------------------------------------------------------------------

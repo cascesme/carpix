@@ -28,4 +28,42 @@ class ImageService:
     async def get_or_fetch(
         self, brand: str, model: str, year: int
     ) -> tuple[FileResponse, bool]:
-        raise NotImplementedError
+        brand_key = canonical_key(brand)
+        model_key = canonical_key(model)
+
+        lock_key = (brand_key, model_key, year)
+        if lock_key not in self._locks:
+            self._locks[lock_key] = asyncio.Lock()
+        async with self._locks[lock_key]:
+            entry = await self._repo.find(brand_key, model_key, year)
+            if entry is not None:
+                try:
+                    return self._storage.file_response(brand_key, model_key, year), True
+                except FileNotFoundError:
+                    pass  # self-healing: fall through to re-fetch
+
+            url = await self._wikimedia.find_jpeg_url(brand, model, year)
+            if url is None:
+                raise HTTPException(
+                    status_code=404,
+                    detail="No image found for this vehicle",
+                )
+
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url, timeout=httpx.Timeout(30.0))
+                response.raise_for_status()
+                image_bytes: bytes = response.content
+
+            saved_path: Path = await self._storage.save(
+                brand_key, model_key, year, image_bytes
+            )
+            file_title: str = url.rsplit("/", 1)[-1]
+            await self._repo.insert(
+                brand_key,
+                model_key,
+                year,
+                local_path=str(saved_path),
+                source_url=url,
+                file_title=file_title,
+            )
+            return self._storage.file_response(brand_key, model_key, year), False
