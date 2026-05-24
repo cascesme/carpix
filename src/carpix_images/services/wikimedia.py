@@ -32,7 +32,9 @@ class WikimediaClient:
             "iiurlwidth": "800",
             "format": "json",
         }
-        response = await self._client.get(_COMMONS_API, params=params)
+        response = await self._client.get(
+            _COMMONS_API, params=params, headers={"User-Agent": _USER_AGENT}
+        )
         response.raise_for_status()
         data: dict[str, Any] = response.json()
 
