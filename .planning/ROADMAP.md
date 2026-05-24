@@ -100,7 +100,15 @@ Plans:
   3. When `{year} {brand} {model}` yields no JPEG candidate, the client retries automatically with `{brand} {model}` before giving up
   4. When both queries yield no result, the client returns a sentinel (None or empty result) without raising an exception
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — TDD RED baseline: move httpx to prod deps, WikimediaClient stub, 6 failing unit tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 04-02-PLAN.md — Implement WikimediaClient (find_jpeg_url + _search_first_jpeg); all 6 tests GREEN + ruff + mypy --strict clean
 
 ### Phase 5: Service Orchestration
 
@@ -155,7 +163,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation | 2/2 | Complete   | 2026-05-22 |
 | 2. Storage Layer | 2/2 | Complete   | 2026-05-23 |
 | 3. Database Layer | 2/2 | Complete   | 2026-05-23 |
-| 4. Wikimedia Client | 0/TBD | Not started | - |
+| 4. Wikimedia Client | 0/2 | Not started | - |
 | 5. Service Orchestration | 0/TBD | Not started | - |
 | 6. Router + E2E Integration | 0/TBD | Not started | - |
 | 7. Containerization | 0/TBD | Not started | - |
