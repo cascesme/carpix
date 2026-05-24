@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
+import httpx
 import pytest
 import respx
 from fastapi import HTTPException
@@ -61,7 +62,12 @@ def _make_service(
     wikimedia = MagicMock()
     wikimedia.find_jpeg_url = AsyncMock(return_value=wikimedia_return)
 
-    return ImageService(storage=storage, repo=repo, wikimedia=wikimedia)
+    return ImageService(
+        storage=storage,
+        repo=repo,
+        wikimedia=wikimedia,
+        http_client=httpx.AsyncClient(),
+    )
 
 
 async def test_cache_hit_returns_file_response_without_wikimedia_call() -> None:

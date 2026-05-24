@@ -19,10 +19,12 @@ class ImageService:
         storage: StorageService,
         repo: CacheRepository,
         wikimedia: WikimediaClient,
+        http_client: httpx.AsyncClient,
     ) -> None:
         self._storage = storage
         self._repo = repo
         self._wikimedia = wikimedia
+        self._http_client = http_client
         self._locks: dict[tuple[str, str, int], asyncio.Lock] = {}
 
     async def get_or_fetch(
@@ -49,16 +51,15 @@ class ImageService:
                     detail="No image found for this vehicle",
                 )
 
-            async with httpx.AsyncClient() as client:
-                try:
-                    response = await client.get(url, timeout=httpx.Timeout(30.0))
-                    response.raise_for_status()
-                except (httpx.HTTPStatusError, httpx.RequestError):
-                    raise HTTPException(
-                        status_code=404,
-                        detail="No image found for this vehicle",
-                    )
-                image_bytes: bytes = response.content
+            try:
+                response = await self._http_client.get(url, timeout=httpx.Timeout(30.0))
+                response.raise_for_status()
+            except (httpx.HTTPStatusError, httpx.RequestError):
+                raise HTTPException(
+                    status_code=404,
+                    detail="No image found for this vehicle",
+                )
+            image_bytes: bytes = response.content
 
             saved_path: Path = await self._storage.save(
                 brand_key, model_key, year, image_bytes

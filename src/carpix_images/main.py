@@ -22,7 +22,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     repo: CacheRepository = CacheRepository(engine)
     wikimedia: WikimediaClient = WikimediaClient(http_client)
     image_service: ImageService = ImageService(
-        storage=storage, repo=repo, wikimedia=wikimedia
+        storage=storage, repo=repo, wikimedia=wikimedia, http_client=http_client
     )
     app.state.engine = engine
     app.state.image_service = image_service
