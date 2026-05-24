@@ -50,8 +50,14 @@ class ImageService:
                 )
 
             async with httpx.AsyncClient() as client:
-                response = await client.get(url, timeout=httpx.Timeout(30.0))
-                response.raise_for_status()
+                try:
+                    response = await client.get(url, timeout=httpx.Timeout(30.0))
+                    response.raise_for_status()
+                except (httpx.HTTPStatusError, httpx.RequestError):
+                    raise HTTPException(
+                        status_code=404,
+                        detail="No image found for this vehicle",
+                    )
                 image_bytes: bytes = response.content
 
             saved_path: Path = await self._storage.save(
