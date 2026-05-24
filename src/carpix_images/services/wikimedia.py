@@ -32,10 +32,13 @@ class WikimediaClient:
             "iiurlwidth": "800",
             "format": "json",
         }
-        response = await self._client.get(
-            _COMMONS_API, params=params, headers={"User-Agent": _USER_AGENT}
-        )
-        response.raise_for_status()
+        try:
+            response = await self._client.get(
+                _COMMONS_API, params=params, headers={"User-Agent": _USER_AGENT}
+            )
+            response.raise_for_status()
+        except (httpx.HTTPStatusError, httpx.RequestError):
+            return None
         data: dict[str, Any] = response.json()
 
         pages: dict[str, Any] = data.get("query", {}).get("pages", {})
