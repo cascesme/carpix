@@ -72,9 +72,10 @@ async def test_cache_hit_returns_file_response_without_wikimedia_call() -> None:
         storage_file_response_return=expected_response,
     )
 
-    result = await svc.get_or_fetch("toyota", "corolla", 2022)
+    response, cache_hit = await svc.get_or_fetch("toyota", "corolla", 2022)
 
-    assert isinstance(result, FileResponse)
+    assert isinstance(response, FileResponse)
+    assert cache_hit is True
     svc._wikimedia.find_jpeg_url.assert_not_called()  # type: ignore[attr-defined]
 
 
@@ -92,9 +93,10 @@ async def test_cache_miss_fetches_saves_inserts_and_returns_file_response(
         storage_file_response_return=expected_response,
     )
 
-    result = await svc.get_or_fetch("toyota", "corolla", 2022)
+    response, cache_hit = await svc.get_or_fetch("toyota", "corolla", 2022)
 
-    assert isinstance(result, FileResponse)
+    assert isinstance(response, FileResponse)
+    assert cache_hit is False
     svc._storage.save.assert_called_once()  # type: ignore[attr-defined]
     svc._repo.insert.assert_called_once()  # type: ignore[attr-defined]
 
@@ -118,7 +120,9 @@ async def test_concurrent_requests_for_same_key_trigger_exactly_one_wikimedia_fe
         svc.get_or_fetch("toyota", "corolla", 2022),
     )
 
-    assert all(isinstance(r, FileResponse) for r in responses)
+    (r0, hit0), (r1, hit1) = responses
+    assert isinstance(r0, FileResponse)
+    assert isinstance(r1, FileResponse)
     assert svc._wikimedia.find_jpeg_url.call_count == 1  # type: ignore[attr-defined]
 
 
@@ -137,9 +141,10 @@ async def test_self_healing_when_db_hit_but_file_absent(
         storage_file_response_side_effect=[FileNotFoundError("missing"), good_response],
     )
 
-    result = await svc.get_or_fetch("toyota", "corolla", 2022)
+    response, cache_hit = await svc.get_or_fetch("toyota", "corolla", 2022)
 
-    assert isinstance(result, FileResponse)
+    assert isinstance(response, FileResponse)
+    assert cache_hit is False
     svc._wikimedia.find_jpeg_url.assert_called_once()  # type: ignore[attr-defined]
 
 
