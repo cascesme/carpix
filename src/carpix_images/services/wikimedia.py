@@ -47,6 +47,7 @@ class WikimediaClient:
             if not imageinfo:
                 continue
             info: dict[str, Any] = imageinfo[0]
-            if info.get("mime") == "image/jpeg":
-                return str(info["thumburl"])
+            thumb = info.get("thumburl")
+            if thumb and info.get("mime") == "image/jpeg":
+                return str(thumb)
         return None
