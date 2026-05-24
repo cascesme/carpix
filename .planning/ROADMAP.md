@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Project scaffolding, normalization logic, and health endpoint skeleton (completed 2026-05-22)
 - [x] **Phase 2: Storage Layer** - StorageService with path contract and traversal guard (completed 2026-05-23)
 - [x] **Phase 3: Database Layer** - Alembic migration, CacheRepository, and connection pool lifecycle (completed 2026-05-23)
-- [ ] **Phase 4: Wikimedia Client** - 3-step image fetch with JPEG filter and fallback query chain
+- [x] **Phase 4: Wikimedia Client** - 3-step image fetch with JPEG filter and fallback query chain (completed 2026-05-24)
 - [ ] **Phase 5: Service Orchestration** - ImageService with cache-aside logic, per-key locking, and self-healing
 - [ ] **Phase 6: Router + E2E Integration** - API endpoints, X-Cache header, and full test suite
 - [ ] **Phase 7: Containerization** - Dockerfile, docker-compose, and volume persistence
@@ -108,7 +108,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 04-02-PLAN.md — Implement WikimediaClient (find_jpeg_url + _search_first_jpeg); all 6 tests GREEN + ruff + mypy --strict clean
+- [x] 04-02-PLAN.md — Implement WikimediaClient (find_jpeg_url + _search_first_jpeg); all 6 tests GREEN + ruff + mypy --strict clean
 
 ### Phase 5: Service Orchestration
 
@@ -163,7 +163,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 1. Foundation | 2/2 | Complete   | 2026-05-22 |
 | 2. Storage Layer | 2/2 | Complete   | 2026-05-23 |
 | 3. Database Layer | 2/2 | Complete   | 2026-05-23 |
-| 4. Wikimedia Client | 1/2 | In Progress|  |
+| 4. Wikimedia Client | 2/2 | Complete   | 2026-05-24 |
 | 5. Service Orchestration | 0/TBD | Not started | - |
 | 6. Router + E2E Integration | 0/TBD | Not started | - |
 | 7. Containerization | 0/TBD | Not started | - |
