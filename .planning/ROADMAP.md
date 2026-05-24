@@ -166,7 +166,15 @@ Plans:
   2. `docker-compose up` starts the carpix-images service and a Postgres service; the named volume mounts at `/images`
   3. After fetching an image, restarting the container via `docker-compose restart` serves the same image from cache (no Wikimedia re-fetch) — DB rows and volume contents persist
 
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+**Wave 1**
+
+- [ ] 07-01-PLAN.md — Multi-stage Dockerfile with appuser + /images owned by appuser + .dockerignore
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 07-02-PLAN.md — docker-compose.yml with Postgres service, named volumes, healthcheck-gated startup, and persistence verification checkpoint
 
 ## Progress
 
@@ -181,4 +189,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
 | 4. Wikimedia Client | 2/2 | Complete   | 2026-05-24 |
 | 5. Service Orchestration | 2/2 | Complete   | 2026-05-24 |
 | 6. Router + E2E Integration | 2/2 | Complete   | 2026-05-24 |
-| 7. Containerization | 0/TBD | Not started | - |
+| 7. Containerization | 0/2 | Not started | - |
