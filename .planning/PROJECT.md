@@ -15,6 +15,9 @@ Any vehicle query is answered with an image — cache hit or Wikimedia fetch —
 - [x] Cached images persist across container restarts via Docker volume mount at `/images` — Validated in Phase 02 (storage-layer): StorageService writes to `{base}/{brand}/{model}/{year}/image.jpg`
 - [x] Input brand/model are normalized to canonical keys (lowercase, strip non-alphanumeric) before cache lookup — Validated in Phase 01 (foundation): `canonical_key()` in domain/normalize.py
 - [x] `GET /health` returns service liveness status — Validated in Phase 01 (foundation): `/health` endpoint with DB probe
+- [x] DB row insert/lookup by (brand_key, model_key, year) composite key, idempotent — Validated in Phase 03 (database-layer): CacheRepository.find() + insert() with ON CONFLICT DO NOTHING
+- [x] Alembic migration creates vehicle_images table with composite PK — Validated in Phase 03 (database-layer): 0001_create_vehicle_images.py, all integration tests pass
+- [x] AsyncEngine wired into FastAPI lifespan (startup create, shutdown dispose) — Validated in Phase 03 (database-layer): main.py lifespan, test_pool_lifecycle PASSED
 
 ### Active
 
@@ -85,4 +88,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after initialization*
+*Last updated: 2026-05-24 — Phase 03 complete (database layer)*
