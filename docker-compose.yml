@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: carpix
+      POSTGRES_PASSWORD: carpix
+      POSTGRES_DB: carpix
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U carpix -d carpix"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  carpix-images:
+    build: .
+    image: carpix-images:latest
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://carpix:carpix@postgres:5432/carpix
+    volumes:
+      - carpix_images_data:/images
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["sh", "-c", "alembic upgrade head && uvicorn carpix_images.main:app --host 0.0.0.0 --port 8000"]
+
+volumes:
+  postgres_data:
+  carpix_images_data:
