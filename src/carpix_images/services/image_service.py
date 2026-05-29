@@ -53,7 +53,11 @@ class ImageService:
                 )
 
             try:
-                response = await self._http_client.get(url, timeout=httpx.Timeout(30.0), headers={"User-Agent": _USER_AGENT})
+                response = await self._http_client.get(
+                    url,
+                    timeout=httpx.Timeout(30.0),
+                    headers={"User-Agent": _USER_AGENT},
+                )
                 response.raise_for_status()
             except (httpx.HTTPStatusError, httpx.RequestError):
                 raise HTTPException(
