@@ -4,6 +4,8 @@ from typing import Any
 
 import httpx
 
+from carpix_images.domain.validate import is_valid_candidate
+
 _COMMONS_API = "https://commons.wikimedia.org/w/api.php"
 _USER_AGENT = "carpix-images/0.1 (https://github.com/user/carpix)"
 
@@ -13,12 +15,20 @@ class WikimediaClient:
         self._client = client
 
     async def find_jpeg_url(self, brand: str, model: str, year: int) -> str | None:
-        primary = await self._search_first_jpeg(f"{year} {brand} {model}")
-        if primary is not None:
-            return primary
-        return await self._search_first_jpeg(f"{brand} {model}")
+        strategies = [
+            f"{year} {brand} {model}",
+            f"{brand} {model}",
+            f"{brand} {model} exterior",
+        ]
+        for query in strategies:
+            url = await self._search_valid_jpeg(query, brand, model)
+            if url is not None:
+                return url
+        return None
 
-    async def _search_first_jpeg(self, query: str) -> str | None:
+    async def _search_valid_jpeg(
+        self, query: str, brand: str, model: str
+    ) -> str | None:
         params = {
             "action": "query",
             "generator": "search",
@@ -49,6 +59,9 @@ class WikimediaClient:
                 continue
             info: dict[str, Any] = imageinfo[0]
             thumb = info.get("thumburl")
-            if thumb and info.get("mime") == "image/jpeg":
-                return str(thumb)
+            if not thumb or info.get("mime") != "image/jpeg":
+                continue
+            if not is_valid_candidate(page.get("title", ""), brand, model):
+                continue
+            return str(thumb)
         return None

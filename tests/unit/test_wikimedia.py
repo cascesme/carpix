@@ -194,11 +194,140 @@ async def test_fallback_query_called_when_primary_returns_no_jpeg(
     assert respx_mock.calls.call_count == 2
 
 
-async def test_returns_none_when_both_queries_yield_no_jpeg(
+async def test_returns_none_when_all_strategies_yield_no_jpeg(
     wiki_client: WikimediaClient, respx_mock: respx.MockRouter
 ) -> None:
     empty_response = httpx.Response(200, json={"query": {"pages": {}}})
-    respx_mock.get(_API_URL).mock(side_effect=[empty_response, empty_response])
+    respx_mock.get(_API_URL).mock(
+        side_effect=[empty_response, empty_response, empty_response]
+    )
     result = await wiki_client.find_jpeg_url("nonexistent", "vehicle", 9999)
     assert result is None
+    assert respx_mock.calls.call_count == 3
+
+
+async def test_invalid_title_skips_candidate_uses_next(
+    wiki_client: WikimediaClient, respx_mock: respx.MockRouter
+) -> None:
+    respx_mock.get(_API_URL).respond(
+        200,
+        json={
+            "query": {
+                "pages": {
+                    "1": {
+                        "pageid": 1,
+                        "ns": 6,
+                        "title": "File:Ferrari_488_interior.jpg",
+                        "index": 1,
+                        "imagerepository": "local",
+                        "imageinfo": [
+                            {
+                                "mime": "image/jpeg",
+                                "thumburl": "https://upload.wikimedia.org/interior.jpg",
+                            }
+                        ],
+                    },
+                    "2": {
+                        "pageid": 2,
+                        "ns": 6,
+                        "title": "File:Ferrari_488_Spider_2019.jpg",
+                        "index": 2,
+                        "imagerepository": "local",
+                        "imageinfo": [
+                            {
+                                "mime": "image/jpeg",
+                                "thumburl": "https://upload.wikimedia.org/spider.jpg",
+                            }
+                        ],
+                    },
+                }
+            }
+        },
+    )
+    result = await wiki_client.find_jpeg_url("ferrari", "488", 2019)
+    assert result == "https://upload.wikimedia.org/spider.jpg"
+
+
+async def test_all_candidates_invalid_falls_to_next_strategy(
+    wiki_client: WikimediaClient, respx_mock: respx.MockRouter
+) -> None:
+    bad_response = httpx.Response(
+        200,
+        json={
+            "query": {
+                "pages": {
+                    "1": {
+                        "pageid": 1,
+                        "ns": 6,
+                        "title": "File:BMW_3series_plan_in_BMW-Museum.jpg",
+                        "index": 1,
+                        "imagerepository": "local",
+                        "imageinfo": [
+                            {
+                                "mime": "image/jpeg",
+                                "thumburl": "https://upload.wikimedia.org/museum.jpg",
+                            }
+                        ],
+                    }
+                }
+            }
+        },
+    )
+    good_response = httpx.Response(
+        200,
+        json={
+            "query": {
+                "pages": {
+                    "2": {
+                        "pageid": 2,
+                        "ns": 6,
+                        "title": "File:BMW_3_Series_2020.jpg",
+                        "index": 1,
+                        "imagerepository": "local",
+                        "imageinfo": [
+                            {
+                                "mime": "image/jpeg",
+                                "thumburl": "https://upload.wikimedia.org/coupe.jpg",
+                            }
+                        ],
+                    }
+                }
+            }
+        },
+    )
+    respx_mock.get(_API_URL).mock(side_effect=[bad_response, good_response])
+    result = await wiki_client.find_jpeg_url("bmw", "3series", 2020)
+    assert result == "https://upload.wikimedia.org/coupe.jpg"
     assert respx_mock.calls.call_count == 2
+
+
+async def test_third_strategy_exterior_tried(
+    wiki_client: WikimediaClient, respx_mock: respx.MockRouter
+) -> None:
+    empty = httpx.Response(200, json={"query": {"pages": {}}})
+    good_response = httpx.Response(
+        200,
+        json={
+            "query": {
+                "pages": {
+                    "1": {
+                        "pageid": 1,
+                        "ns": 6,
+                        "title": "File:Honda_Civic_2021.jpg",
+                        "index": 1,
+                        "imagerepository": "local",
+                        "imageinfo": [
+                            {
+                                "mime": "image/jpeg",
+                                "thumburl": "https://upload.wikimedia.org/civic.jpg",
+                            }
+                        ],
+                    }
+                }
+            }
+        },
+    )
+    respx_mock.get(_API_URL).mock(side_effect=[empty, empty, good_response])
+    result = await wiki_client.find_jpeg_url("honda", "civic", 2021)
+    assert result == "https://upload.wikimedia.org/civic.jpg"
+    assert respx_mock.calls.call_count == 3

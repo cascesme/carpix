@@ -37,8 +37,14 @@ def _alembic_cfg() -> Config:
     return cfg
 
 
-def _stub_wikimedia_success(respx_mock: respx.MockRouter, thumb_url: str) -> None:
+def _stub_wikimedia_success(
+    respx_mock: respx.MockRouter,
+    thumb_url: str,
+    brand: str,
+    model: str,
+) -> None:
     """Stub both Wikimedia API search and CDN thumbnail download."""
+    title = f"File:{brand}_{model}_stub.jpg"
     respx_mock.get(COMMONS_SEARCH_URL).respond(
         200,
         json={
@@ -46,6 +52,7 @@ def _stub_wikimedia_success(respx_mock: respx.MockRouter, thumb_url: str) -> Non
                 "pages": {
                     "1": {
                         "index": 1,
+                        "title": title,
                         "imageinfo": [{"thumburl": thumb_url, "mime": "image/jpeg"}],
                     }
                 }
@@ -122,7 +129,7 @@ async def test_cache_miss_returns_jpeg_with_x_cache_miss_header(
 ) -> None:
     """GET first request → 200, X-Cache: MISS, content-type: image/jpeg."""
     thumb = "https://upload.wikimedia.org/thumb/sample.jpg"
-    _stub_wikimedia_success(respx_mock, thumb)
+    _stub_wikimedia_success(respx_mock, thumb, "toyota", "corolla")
     r = await client.get("/v1/images/toyota/corolla/2022")
     assert r.status_code == 200
     assert r.headers["x-cache"] == "MISS"
@@ -135,7 +142,7 @@ async def test_cache_hit_returns_jpeg_with_x_cache_hit_header(
 ) -> None:
     """Two consecutive GETs → second response X-Cache: HIT."""
     thumb = "https://upload.wikimedia.org/thumb/sample.jpg"
-    _stub_wikimedia_success(respx_mock, thumb)
+    _stub_wikimedia_success(respx_mock, thumb, "honda", "civic")
     r1 = await client.get("/v1/images/honda/civic/2021")
     assert r1.status_code == 200
     r2 = await client.get("/v1/images/honda/civic/2021")
@@ -160,7 +167,7 @@ async def test_brand_model_normalized_in_path(
 ) -> None:
     """Mixed-case and URL-encoded model → normalization works, X-Cache: MISS."""
     thumb = "https://upload.wikimedia.org/thumb/normalized.jpg"
-    _stub_wikimedia_success(respx_mock, thumb)
+    _stub_wikimedia_success(respx_mock, thumb, "toyota", "corollasport")
     r = await client.get("/v1/images/Toyota/Corolla%20Sport/2022")
     assert r.status_code == 200
     assert r.headers["x-cache"] == "MISS"
@@ -172,7 +179,7 @@ async def test_content_type_is_image_jpeg(
 ) -> None:
     """Any successful response has content-type: image/jpeg."""
     thumb = "https://upload.wikimedia.org/thumb/ct_test.jpg"
-    _stub_wikimedia_success(respx_mock, thumb)
+    _stub_wikimedia_success(respx_mock, thumb, "ford", "mustang")
     r = await client.get("/v1/images/ford/mustang/2020")
     assert r.status_code == 200
     assert r.headers["content-type"].startswith("image/jpeg")
