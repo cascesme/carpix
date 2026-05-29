@@ -21,52 +21,94 @@ A standalone FastAPI microservice that serves car images by brand, model, and ye
 <!-- GSD:stack-start source:research/STACK.md -->
 ## Technology Stack
 
-## Recommended Stack
-### Core
-### Database
-- asyncpg is a pure-async driver with no thread-pool adapter layer; it does not block the event
-- SQLAlchemy 2.0 has first-class asyncpg support via `create_async_engine("postgresql+asyncpg://...")`
-- For a cache microservice the bottleneck is the Wikimedia HTTP fetch, not the DB; asyncpg's
-- asyncpg 0.31.0 is the current stable release; well-maintained, widely deployed
-### HTTP Client
-- Native async/await; no thread-pool wrapper unlike requests
-- Used by FastAPI's own `TestClient` internally, so the testing integration is seamless
-- Wikimedia requires a User-Agent header on API calls; httpx's default headers are clean to
-### Testing
-- respx integrates directly with httpx transport (no patching, no leakage between tests)
-- URL pattern matching (`respx.get("https://commons.wikimedia.org/...").respond(...)`) is
-- async-native by design, not an afterthought
-### Tooling
-## What NOT to Use
-## Key Trade-offs
-## Installation
-# pyproject.toml
-## Sources
-- FastAPI official docs: https://fastapi.tiangolo.com/advanced/custom-response/ (FileResponse)
-- SQLAlchemy asyncio docs: https://docs.sqlalchemy.org/en/20/orm/extensions/asyncio.html
-- asyncpg PyPI: https://pypi.org/project/asyncpg/
-- Alembic async cookbook: https://alembic.sqlalchemy.org/en/latest/cookbook.html
-- httpx official docs: https://www.python-httpx.org/advanced/timeouts/
-- respx GitHub: https://github.com/lundberg/respx
-- pytest-asyncio docs: https://pytest-asyncio.readthedocs.io/
-- testcontainers-python docs: https://testcontainers-python.readthedocs.io/
-- testcontainers + FastAPI + asyncpg: https://lealre.github.io/fastapi-testcontainer-asyncpg/
-- ruff configuration: https://docs.astral.sh/ruff/configuration/
-- uv + FastAPI + Docker: https://docs.astral.sh/uv/guides/integration/fastapi/
-- asyncpg vs psycopg3 comparison: https://fernandoarteaga.dev/blog/psycopg-vs-asyncpg/
-- Modern Python tooling 2026: https://softaims.com/blog/modern-python-tooling-uv-ruff-mypy-2026
+| Layer | Library | Why |
+|---|---|---|
+| HTTP framework | FastAPI | async-native, mirrors parent project |
+| DB driver | asyncpg 0.31+ via SQLAlchemy 2.0 async | pure-async, no thread-pool adapter; bottleneck is Wikimedia fetch not DB |
+| HTTP client | httpx | async/await native; respx mocks its transport cleanly |
+| Async file I/O | anyio | used by StorageService for async mkdir/write |
+| Migrations | Alembic | async-compatible; runs `alembic upgrade head` at container start |
+| Testing | pytest-asyncio + respx + testcontainers[postgres] | async-native, no mock leakage, real DB in CI |
+| Lint/format | ruff | replaces flake8 + isort + pyupgrade |
+| Type checking | mypy (strict) | full type coverage enforced |
+| Packaging | uv + hatchling | fast installs, lock file committed |
+
+**Do not use:** Pillow/PIL (resize via Wikimedia CDN `iiurlwidth` param instead), requests, psycopg2/3, SQLAlchemy ORM (raw `text()` queries only).
 <!-- GSD:stack-end -->
 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 ## Conventions
 
-Conventions not yet established. Will populate as patterns emerge during development.
+### Key normalization
+`canonical_key(value)` in `domain/normalize.py` strips all non-alphanumeric chars and lowercases. Use it on brand and model before any cache lookup or storage path construction. `"DM-i"`, `"DMi"`, and `"DM i"` all map to `"dmi"`.
+
+### Dependency injection
+Services receive collaborators via constructor. Routers retrieve them from `request.app.state` with an explicit `cast()`. No global singletons outside `main.py` lifespan.
+
+### Error handling
+All fetch/extraction failures raise `HTTPException(status_code=404)`. Never raise 500 — if Wikimedia returns nothing or the download fails, 404 is the contract.
+
+### DB access
+Raw SQL via `sqlalchemy.text()` only — no ORM, no mapped classes. `CacheRepository` uses `dataclass` for `CacheEntry`. Upsert on conflict: `ON CONFLICT (brand_key, model_key, year) DO UPDATE`.
+
+### File I/O
+`StorageService` uses `anyio.Path` for async writes. Always validates resolved path is under `_base` to prevent path traversal.
+
+### Concurrency
+`ImageService` holds a `dict[tuple, asyncio.Lock]` keyed by `(brand_key, model_key, year)` to coalesce concurrent fetches for the same vehicle.
+
+### Response header
+Set `X-Cache: HIT` or `X-Cache: MISS` on every image response.
+
+### Module-level imports
+All source files start with `from __future__ import annotations`.
 <!-- GSD:conventions-end -->
 
 <!-- GSD:architecture-start source:ARCHITECTURE.md -->
 ## Architecture
 
-Architecture not yet mapped. Follow existing patterns found in the codebase.
+```
+src/carpix_images/
+├── main.py                        # App factory + lifespan wiring (engine, http_client, services)
+├── config.py                      # Pydantic-settings (DATABASE_URL, IMAGES_DIR)
+├── domain/
+│   └── normalize.py               # canonical_key() — pure logic, no I/O
+├── infrastructure/
+│   └── cache_repository.py        # CacheRepository — PostgreSQL read/write via asyncpg
+├── services/
+│   ├── image_service.py           # ImageService — orchestrates fetch/cache/serve
+│   ├── storage.py                 # StorageService — async filesystem save + FileResponse
+│   └── wikimedia.py               # WikimediaClient — Wikimedia Commons API search
+└── routers/
+    ├── health.py                  # GET /health
+    └── images.py                  # GET /v1/images/{brand}/{model}/{year}
+```
+
+### Request flow
+
+```
+Router → ImageService.get_or_fetch()
+           ├── canonical_key(brand), canonical_key(model)
+           ├── acquire per-vehicle asyncio.Lock
+           ├── CacheRepository.find() → hit → StorageService.file_response()
+           └── miss → WikimediaClient.find_jpeg_url()
+                        └── httpx GET 800px thumb → StorageService.save()
+                              └── CacheRepository.insert() → StorageService.file_response()
+```
+
+### DB schema
+
+Table `vehicle_images`, PK `(brand_key, model_key, year)`:
+
+| Column | Type |
+|---|---|
+| brand_key | text |
+| model_key | text |
+| year | integer |
+| local_path | text |
+| source_url | text |
+| file_title | text |
+| cached_at | timestamptz (server default now()) |
 <!-- GSD:architecture-end -->
 
 <!-- GSD:skills-start source:skills/ -->
