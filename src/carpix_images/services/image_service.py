@@ -14,6 +14,7 @@ from carpix_images.services.wikimedia import WikimediaClient
 
 _USER_AGENT = "carpix-images/0.1 (https://github.com/user/carpix)"
 
+
 class ImageService:
     def __init__(
         self,

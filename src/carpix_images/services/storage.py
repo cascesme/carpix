@@ -10,9 +10,7 @@ class StorageService:
     def __init__(self, base_dir: Path) -> None:
         self._base = base_dir.resolve()
 
-    def _validated_path(
-        self, brand_key: str, model_key: str, year: int
-    ) -> Path:
+    def _validated_path(self, brand_key: str, model_key: str, year: int) -> Path:
         candidate = self._base / brand_key / model_key / str(year) / "image.jpg"
         resolved = candidate.resolve()
         if not resolved.is_relative_to(self._base):
@@ -28,8 +26,6 @@ class StorageService:
         await target_file.write_bytes(data)
         return Path(target_file)
 
-    def file_response(
-        self, brand_key: str, model_key: str, year: int
-    ) -> FileResponse:
+    def file_response(self, brand_key: str, model_key: str, year: int) -> FileResponse:
         path = self._validated_path(brand_key, model_key, year)
         return FileResponse(path=path, media_type="image/jpeg")

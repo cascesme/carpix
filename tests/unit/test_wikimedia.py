@@ -47,7 +47,10 @@ async def test_find_jpeg_url_returns_thumburl_exactly(
         },
     )
     result = await wiki_client.find_jpeg_url("toyota", "corolla", 2022)
-    assert result == "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Toyota_Corolla_2022.jpg/960px-Toyota_Corolla_2022.jpg"
+    assert (
+        result
+        == "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ab/Toyota_Corolla_2022.jpg/960px-Toyota_Corolla_2022.jpg"
+    )
 
 
 @pytest.mark.respx(assert_all_called=False)
@@ -92,9 +95,7 @@ async def test_skips_png_and_returns_none(
                         "title": "File:Honda_Civic_Logo.png",
                         "index": 1,
                         "imagerepository": "local",
-                        "imageinfo": [
-                            {"mime": "image/png", "thumburl": "...png.png"}
-                        ],
+                        "imageinfo": [{"mime": "image/png", "thumburl": "...png.png"}],
                     }
                 }
             }

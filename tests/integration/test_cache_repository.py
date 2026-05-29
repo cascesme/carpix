@@ -124,8 +124,6 @@ async def test_insert_idempotent(repo: CacheRepository) -> None:
 async def test_pool_lifecycle(engine: AsyncEngine) -> None:
     """DB-03: Pool can be created and disposed without leaked connections."""
     async with engine.connect() as conn:
-        result = await conn.execute(
-            __import__("sqlalchemy").text("SELECT 1")
-        )
+        result = await conn.execute(__import__("sqlalchemy").text("SELECT 1"))
         assert result.scalar() == 1
     await engine.dispose()

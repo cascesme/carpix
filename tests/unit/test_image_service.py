@@ -48,9 +48,7 @@ def _make_service(
             else MagicMock(spec=FileResponse)
         )
     default_path = Path("/images/toyota/corolla/2022/image.jpg")
-    storage.save = AsyncMock(
-        return_value=storage_save_return or default_path
-    )
+    storage.save = AsyncMock(return_value=storage_save_return or default_path)
 
     repo = MagicMock()
     if repo_find_side_effect is not None:

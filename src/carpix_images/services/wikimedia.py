@@ -12,9 +12,7 @@ class WikimediaClient:
     def __init__(self, client: httpx.AsyncClient) -> None:
         self._client = client
 
-    async def find_jpeg_url(
-        self, brand: str, model: str, year: int
-    ) -> str | None:
+    async def find_jpeg_url(self, brand: str, model: str, year: int) -> str | None:
         primary = await self._search_first_jpeg(f"{year} {brand} {model}")
         if primary is not None:
             return primary
